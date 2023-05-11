@@ -9,6 +9,9 @@
   <style>
     body { margin: 0; padding: 0; }
     #map { height: 100vh; width: 100vw; }
+    .popup-content { display: flex; flex-direction: column; align-items: center; }
+    .popup-content img { max-width: 100%; }
+    .popup-content button { margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -24,11 +27,18 @@
     var marker = new mapboxgl.Marker()
       .setLngLat(lngLat)
       .addTo(map);
-    var audioFile = new Audio('file.mp3');
-    marker.getElement().addEventListener('click', function() {
-      audioFile.play();
-    });
+    marker.setPopup(new mapboxgl.Popup({ offset: 25 })
+      .setHTML('<div class="popup-content">' +
+        '<p>You are now here</p>' +
+        '<img src="image.jpg" alt="Image">' +
+        '<button onclick="playAudio()">Play Audio</button>' +
+        '</div>')
+    );
     map.setCenter(lngLat);
+    function playAudio() {
+      var audioFile = new Audio('file.mp3');
+      audioFile.play();
+    }
   </script>
 </body>
 </html>
