@@ -40,38 +40,42 @@
       audioFile.play();
     }
 
-    // Show user's location with a blue dot
-    map.on('load', function() {
-      map.addSource('user-location', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: []
-        }
-      });
+// Show user's location with a blue dot
+map.on('load', function() {
+  map.addSource('user-location', {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: []
+    }
+  });
 
-      map.addLayer({
-        id: 'user-location-layer',
-        type: 'circle',
-        source: 'user-location',
-        paint: {
-          'circle-radius': 8,
-          'circle-color': '#007cbf'
-        }
-      });
+  map.addLayer({
+    id: 'user-location-layer',
+    type: 'circle',
+    source: 'user-location',
+    paint: {
+      'circle-radius': 8,
+      'circle-color': '#007cbf'
+    }
+  });
 
-      navigator.geolocation.watchPosition(function(position) {
-        var userLocation = {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [position.coords.longitude, position.coords.latitude]
-          }
-        };
+  function updateUserLocation(position) {
+    var userLocation = {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [position.coords.longitude, position.coords.latitude]
+      }
+    };
 
-        map.getSource('user-location').setData(userLocation);
-      });
-    });
+    map.getSource('user-location').setData(userLocation);
+  }
+
+  // Call updateUserLocation() whenever the user's position changes
+  navigator.geolocation.watchPosition(updateUserLocation);
+});
+
   </script>
 </body>
 </html>
