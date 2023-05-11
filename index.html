@@ -1,44 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset='utf-8' />
+  <meta charset="utf-8" />
   <title>Mapbox Example</title>
-  <meta name='viewport' content='width=device-width, initial-scale=1' />
-  <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
-  <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.4.0/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.4.0/mapbox-gl.css' rel='stylesheet' />
   <style>
-    body { margin: 0; padding: 0; }
-    #map { height: 100vh; width: 100vw; }
-    .popup-content { display: flex; flex-direction: column; align-items: center; }
-    .popup-content img { max-width: 100%; }
-    .popup-content button { margin-top: 10px; }
+    #map {
+      width: 100%;
+      height: 500px;
+    }
   </style>
 </head>
 <body>
   <div id='map'></div>
+
   <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoic3BhcmtzbW9iaWxlIiwiYSI6ImNsaGluZng2bjA5aDUzZW8zcjhobTJjd2YifQ.9IinzvKWud82jOSNtipLeA';
+
+    // Create a new map object
     var map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v11',
-      zoom: 13
+      center: [-122.2930, 37.8880],
+      zoom: 12
     });
-    var lngLat = [-122.2906, 37.8959];
+
+    // Add a marker at the specified location
     var marker = new mapboxgl.Marker()
-      .setLngLat(lngLat)
+      .setLngLat([-122.2930, 37.8880])
+      .setPopup(new mapboxgl.Popup().setHTML("<h1>You are now here</h1><img src='image.jpg' /><br><audio controls><source src='file.mp3' type='audio/mp3'></audio>"))
       .addTo(map);
-    marker.setPopup(new mapboxgl.Popup({ offset: 25 })
-      .setHTML('<div class="popup-content">' +
-        '<p>You are now here</p>' +
-        '<img src="image.jpg" alt="Image">' +
-        '<button onclick="playAudio()">Play Audio</button>' +
-        '</div>')
-    );
-    map.setCenter(lngLat);
-    function playAudio() {
-      var audioFile = new Audio('file.mp3');
-      audioFile.play();
-    }
+
+    // Show user's location with a blue dot
+    map.on('load', function() {
+      map.addSource('user-location', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        }
+      });
+
+      map.addLayer({
+        id: 'user-location-layer',
+        type: 'circle',
+        source: 'user-location',
+        paint: {
+          'circle-radius': 8,
+          'circle-color': '#007cbf'
+        }
+      });
+
+      navigator.geolocation.watchPosition(function(position) {
+        var userLocation = {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [position.coords.longitude, position.coords.latitude]
+          }
+        };
+
+        map.getSource('user-location').setData(userLocation);
+      });
+    });
   </script>
 </body>
 </html>
