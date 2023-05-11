@@ -20,19 +20,15 @@
       style: 'mapbox://styles/mapbox/streets-v11',
       zoom: 13
     });
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var lat = position.coords.latitude;
-      var lng = position.coords.longitude;
-      map.setCenter([lng, lat]);
-      var marker = new mapboxgl.Marker()
-        .setLngLat([lng, lat])
-        .addTo(map);
-      var popup = new mapboxgl.Popup()
-        .setLngLat([lng, lat])
-        .setHTML("<p>You are here</p>")
-        .addTo(map);
-      marker.setPopup(popup);
+    var lngLat = [-122.2906, 37.8959];
+    var marker = new mapboxgl.Marker()
+      .setLngLat(lngLat)
+      .addTo(map);
+    var audioFile = new Audio('file.mp3');
+    marker.getElement().addEventListener('click', function() {
+      audioFile.play();
     });
+    map.setCenter(lngLat);
   </script>
 </body>
 </html>
