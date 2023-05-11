@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>Mapbox Example</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1' />
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { height: 100vh; width: 100vw; }
+  </style>
+</head>
+<body>
+  <div id='map'></div>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic3BhcmtzbW9iaWxlIiwiYSI6ImNsaGluZng2bjA5aDUzZW8zcjhobTJjd2YifQ.9IinzvKWud82jOSNtipLeA';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      zoom: 13
+    });
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var lat = position.coords.latitude;
+      var lng = position.coords.longitude;
+      map.setCenter([lng, lat]);
+      var marker = new mapboxgl.Marker()
+        .setLngLat([lng, lat])
+        .addTo(map);
+      var popup = new mapboxgl.Popup()
+        .setLngLat([lng, lat])
+        .setHTML("<p>You are here</p>")
+        .addTo(map);
+      marker.setPopup(popup);
+    });
+  </script>
+</body>
+</html>
